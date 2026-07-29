@@ -4,32 +4,6 @@ import { detectScenario } from './scenarios.js';
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Any agent the scenario has no script for still participates, using a
-// role-shaped generic plan, rather than being reported as a failure.
-const GENERIC_RESEARCH = [
-  ['web', 'Reading the task and pulling the load-bearing terms', 'normal'],
-  ['web', 'Gathering candidate sources', 'normal'],
-  ['verify', 'Position drafted', 'success']
-];
-
-const genericProposal = (key) => ({
-  intro: `${AGENTS[key]?.role || 'Council member'} position.`,
-  claims: [
-    {
-      text: 'This session ran on a scripted scenario, so this agent contributes method rather than domain evidence: the criterion must be fixed before options are ranked.',
-      type: 'normative',
-      evidence: [],
-      verification: 'reasoned'
-    },
-    {
-      text: 'Any claim without a traceable source should be labelled as reasoning, not presented as fact.',
-      type: 'normative',
-      evidence: [],
-      verification: 'reasoned'
-    }
-  ]
-});
-
 // Emits exactly the event stream that backend/worker.js emits, so the UI
 // does not know or care which one is driving it.
 export class SimulatedTransport {
@@ -43,6 +17,10 @@ export class SimulatedTransport {
   }
 
   get mode() { return 'simulated'; }
+
+  supports(task) {
+    return detectScenario(task).key !== 'generic';
+  }
 
   abort() { this.aborted = true; }
 
@@ -62,6 +40,9 @@ export class SimulatedTransport {
     this.aborted = false;
     this.claimIndex.clear();
     this.scenario = detectScenario(task);
+    if (this.scenario.key === 'generic') {
+      throw new Error('unsupported_simulation_task');
+    }
 
     this.bus.emit(EVENTS.SESSION_CREATED, {
       id: newId('ses'),
@@ -91,21 +72,9 @@ export class SimulatedTransport {
     const enabled = new Set(tools);
     agents.forEach((key) => this.bus.emit(EVENTS.AGENT_STARTED, { agent: key, status: 'researching' }));
 
-    // Say plainly when no scripted scenario matched, instead of letting
-    // generic procedural filler look like a real debate about the topic.
-    // This has to come after agent.started, which clears the agent logs.
-    if (this.scenario.key === 'generic') {
-      agents.forEach((key) => this.bus.emit(EVENTS.TOOL_FAILED, {
-        agent: key,
-        tool: 'offline',
-        text: 'No scripted scenario for this question — running a generic method council. Add ?api=<worker-url> for a real answer.'
-      }));
-      await this.pace(200);
-    }
-
     const depth = rules.rigor; // 1 fast, 2 balanced, 3 high
     const active = agents.map((key) => {
-      const lines = this.scenario.research[key] || GENERIC_RESEARCH;
+      const lines = this.scenario.research[key] || [];
       const take = Math.max(2, Math.ceil((lines.length * depth) / 3));
       return { key, lines: lines.slice(0, take) };
     });
@@ -160,7 +129,14 @@ export class SimulatedTransport {
 
     for (const key of agents) {
       if (this.store.session.agents[key]?.status === 'failed') continue;
-      const proposal = this.scenario.proposals[key] || genericProposal(key);
+      const proposal = this.scenario.proposals[key];
+      if (!proposal) {
+        this.bus.emit(EVENTS.AGENT_FAILED, {
+          agent: key,
+          reason: 'This evidence demo has no scripted proposal for the selected agent.'
+        });
+        continue;
+      }
       const claimIds = this.registerClaims(key, proposal.claims, 1);
       this.bus.emit(EVENTS.MESSAGE_CREATED, {
         message_id: newId('msg'),
@@ -224,29 +200,8 @@ export class SimulatedTransport {
       await this.pace(400);
     }
 
-    // Agents with no scripted rebuttal still take a turn, so an unscripted
-    // council does not sit silent through the debate phase.
-    const spoke = new Set(available.map((item) => item.agent));
-    for (const key of live.filter((candidate) => !spoke.has(candidate))) {
-      const target = live.find((candidate) => candidate !== key);
-      if (!target) continue;
-      const ids = this.registerClaims(`${key}-r${round}-generic`, [{
-        text: 'I have no source-backed objection to raise here; I concede the point to whichever proposal carries traceable evidence.',
-        type: 'position',
-        evidence: [],
-        verification: 'reasoned'
-      }], round);
-      this.bus.emit(EVENTS.REBUTTAL_CREATED, {
-        message_id: newId('msg'),
-        type: 'rebuttal',
-        agent: key,
-        target,
-        badge: 'NO OBJECTION',
-        claim_ids: ids
-      });
-      this.charge(400);
-      await this.pace(280);
-    }
+    // Silence is preferable to a manufactured objection. Supported demo
+    // scenarios provide explicit claim-targeted rebuttals for every agent.
   }
 
   // A challenge is the operator forcing targeted verification on one claim.

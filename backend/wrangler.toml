@@ -1,6 +1,6 @@
 name = "pmgpt-council"
 main = "worker.js"
-compatibility_date = "2026-01-15"
+compatibility_date = "2026-07-29"
 
 # The frontend origin allowed to call this Worker.
 [vars]
