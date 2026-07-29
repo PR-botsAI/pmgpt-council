@@ -72,16 +72,6 @@ export class SimulatedTransport {
       rules
     });
 
-    // Say plainly when no scripted scenario matched, instead of letting
-    // generic procedural filler look like a real debate about the topic.
-    if (this.scenario.key === 'generic') {
-      this.bus.emit(EVENTS.TOOL_FAILED, {
-        agent: agents[0],
-        tool: 'router',
-        text: 'No scripted scenario matches this question — running a generic method council. Connect the backend with ?api= for a real answer.'
-      });
-    }
-
     this.scenario.evidence.forEach((item) => this.bus.emit(EVENTS.EVIDENCE_CREATED, {
       ...item,
       retrieved_at: new Date().toISOString()
@@ -100,6 +90,18 @@ export class SimulatedTransport {
 
     const enabled = new Set(tools);
     agents.forEach((key) => this.bus.emit(EVENTS.AGENT_STARTED, { agent: key, status: 'researching' }));
+
+    // Say plainly when no scripted scenario matched, instead of letting
+    // generic procedural filler look like a real debate about the topic.
+    // This has to come after agent.started, which clears the agent logs.
+    if (this.scenario.key === 'generic') {
+      agents.forEach((key) => this.bus.emit(EVENTS.TOOL_FAILED, {
+        agent: key,
+        tool: 'offline',
+        text: 'No scripted scenario for this question — running a generic method council. Add ?api=<worker-url> for a real answer.'
+      }));
+      await this.pace(200);
+    }
 
     const depth = rules.rigor; // 1 fast, 2 balanced, 3 high
     const active = agents.map((key) => {
