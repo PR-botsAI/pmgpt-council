@@ -7,7 +7,9 @@ export const AGENTS = {
   openai: { name: 'OpenAI', letter: 'O', role: 'Lead researcher' },
   claude: { name: 'Claude', letter: 'C', role: 'Critical analyst' },
   grok: { name: 'Grok / Llama', letter: 'G', role: 'Contrarian reviewer' },
-  gemini: { name: 'Gemini', letter: 'M', role: 'Evidence mapper' }
+  gemini: { name: 'Gemini', letter: 'M', role: 'Evidence mapper' },
+  kimi: { name: 'Kimi', letter: 'K', role: 'Long-context synthesist' },
+  openrouter: { name: 'OpenRouter', letter: 'R', role: 'Generalist second opinion' }
 };
 
 // Stage 6 of the plan. Weights are visible in the final scorecard so a
@@ -110,10 +112,11 @@ export class SessionStore {
         break;
 
       case EVENTS.AGENT_FAILED:
-        if (s.agents[p.agent]) {
-          s.agents[p.agent].status = 'failed';
-          s.agents[p.agent].error = p.reason || 'Agent run failed';
-        }
+        // The backend can report a failure for an agent that never made
+        // it into the roster, so create a slot rather than dropping it.
+        if (!s.agents[p.agent]) s.agents[p.agent] = { key: p.agent, logs: [], toolCalls: 0 };
+        s.agents[p.agent].status = 'failed';
+        s.agents[p.agent].error = p.reason || 'Agent run failed';
         break;
 
       case EVENTS.TOOL_STARTED:
