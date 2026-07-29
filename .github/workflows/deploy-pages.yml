@@ -16,10 +16,38 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Verify required files
         run: |
           test -f index.html
-          test -f assets/styles.css
-          test -f assets/app.js
           test -f .nojekyll
+          test -f assets/styles.css
+          test -f assets/styles-v2.css
+          for module in bus store sanitize scenarios render transport-sim transport-live main; do
+            test -f "assets/js/$module.js" || { echo "missing assets/js/$module.js"; exit 1; }
+          done
+          test -f backend/worker.js
+
+      - name: Syntax-check every module
+        run: |
+          for file in assets/js/*.js backend/worker.js; do
+            node --check "$file" || { echo "syntax error in $file"; exit 1; }
+          done
+
+      - name: Confirm no secrets are committed to the frontend
+        run: |
+          if grep -rInE "(sk-[A-Za-z0-9]{20,}|xai-[A-Za-z0-9]{20,}|AIza[A-Za-z0-9_-]{30,})" assets index.html; then
+            echo "A provider key looks committed to the frontend."
+            exit 1
+          fi
+          echo "No provider keys found in the frontend."
+
+      - name: Confirm the entry point is wired
+        run: |
+          grep -q 'assets/js/main.js' index.html
           echo "Agent Arena static files are ready for GitHub Pages branch deployment."
