@@ -1,0 +1,15 @@
+name = "pmgpt-council"
+main = "worker.js"
+compatibility_date = "2026-01-15"
+
+# The frontend origin allowed to call this Worker.
+[vars]
+ALLOWED_ORIGIN = "https://pr-botsai.github.io"
+
+[[durable_objects.bindings]]
+name = "COUNCIL"
+class_name = "CouncilSession"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["CouncilSession"]
