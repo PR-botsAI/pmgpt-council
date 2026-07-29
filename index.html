@@ -21,8 +21,9 @@
   <meta name="twitter:image" content="https://pr-botsai.github.io/pmgpt-council/assets/social-preview.png">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/styles.css?v=2">
-  <link rel="stylesheet" href="assets/styles-v2.css?v=2">
+  <link rel="stylesheet" href="assets/styles.css?v=3">
+  <link rel="stylesheet" href="assets/styles-v2.css?v=3">
+  <link rel="stylesheet" href="assets/styles-agents.css?v=3">
 </head>
 <body>
   <a class="skip-link" href="#arena">Skip to arena</a>
@@ -104,6 +105,18 @@
               <input type="checkbox" value="gemini">
               <span class="model-avatar">M</span>
               <span><strong>Gemini</strong><small>Evidence mapping</small></span>
+              <i></i>
+            </label>
+            <label class="model-toggle kimi">
+              <input type="checkbox" value="kimi">
+              <span class="model-avatar">K</span>
+              <span><strong>Kimi</strong><small>Long-context synthesis</small></span>
+              <i></i>
+            </label>
+            <label class="model-toggle openrouter">
+              <input type="checkbox" value="openrouter">
+              <span class="model-avatar">R</span>
+              <span><strong>OpenRouter</strong><small>Generalist second opinion</small></span>
               <i></i>
             </label>
           </div>
@@ -194,6 +207,16 @@
               <div class="terminal-log" data-agent-log><p class="muted"><i>›</i> Awaiting mission input…</p></div>
               <button type="button" class="expand-log" data-expand-log>Expand audit log</button>
             </article>
+            <article class="agent-card kimi hidden-agent" data-agent-card="kimi">
+              <header><span class="model-avatar">K</span><div><strong>Kimi</strong><small>Long-context synthesist</small></div><span class="agent-state" data-agent-state>OFFLINE</span></header>
+              <div class="terminal-log" data-agent-log><p class="muted"><i>›</i> Awaiting mission input…</p></div>
+              <button type="button" class="expand-log" data-expand-log>Expand audit log</button>
+            </article>
+            <article class="agent-card openrouter hidden-agent" data-agent-card="openrouter">
+              <header><span class="model-avatar">R</span><div><strong>OpenRouter</strong><small>Generalist second opinion</small></div><span class="agent-state" data-agent-state>OFFLINE</span></header>
+              <div class="terminal-log" data-agent-log><p class="muted"><i>›</i> Awaiting mission input…</p></div>
+              <button type="button" class="expand-log" data-expand-log>Expand audit log</button>
+            </article>
           </div>
         </section>
 
@@ -243,6 +266,8 @@
             <div data-score-row="claude"><div><span class="score-dot claude"></span><strong>Claude</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
             <div data-score-row="grok"><div><span class="score-dot grok"></span><strong>Grok / Llama</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
             <div class="hidden-agent" data-score-row="gemini"><div><span class="score-dot gemini"></span><strong>Gemini</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
+            <div class="hidden-agent" data-score-row="kimi"><div><span class="score-dot kimi"></span><strong>Kimi</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
+            <div class="hidden-agent" data-score-row="openrouter"><div><span class="score-dot openrouter"></span><strong>OpenRouter</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
           </div>
           <div class="score-legend"><span>Scored after cross-examination</span></div>
         </section>
@@ -335,6 +360,6 @@
 
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script type="module" src="assets/js/main.js?v=2"></script>
+  <script type="module" src="assets/js/main.js?v=3"></script>
 </body>
 </html>
