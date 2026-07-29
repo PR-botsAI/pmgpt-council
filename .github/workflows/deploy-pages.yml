@@ -1,45 +1,25 @@
-name: Deploy PMGPT Council to GitHub Pages
+name: Validate static Agent Arena
 
 on:
   push:
+    branches: ["main"]
+  pull_request:
     branches: ["main"]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Prepare static site
+        uses: actions/checkout@v4
+      - name: Verify required files
         run: |
-          mkdir -p _site
-          cp index.html 404.html robots.txt .nojekyll _site/
-          cp -R assets _site/assets
-          if [ -f CNAME ]; then cp CNAME _site/CNAME; fi
-          if [ -f sitemap.xml ]; then cp sitemap.xml _site/sitemap.xml; fi
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          test -f index.html
+          test -f assets/styles.css
+          test -f assets/app.js
+          test -f .nojekyll
+          echo "Agent Arena static files are ready for GitHub Pages branch deployment."
