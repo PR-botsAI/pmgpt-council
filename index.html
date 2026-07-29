@@ -7,8 +7,22 @@
   <meta name="color-scheme" content="dark">
   <meta name="description" content="PMGPT Agent Arena — a human-controlled multi-agent research, debate, voting, and synthesis workspace.">
   <title>PMGPT Agent Arena</title>
+
+  <link rel="canonical" href="https://pr-botsai.github.io/pmgpt-council/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PMGPT Agent Arena">
+  <meta property="og:title" content="PMGPT Agent Arena">
+  <meta property="og:description" content="One task enters. Multiple agents investigate and debate. One defensible result leaves.">
+  <meta property="og:url" content="https://pr-botsai.github.io/pmgpt-council/">
+  <meta property="og:image" content="https://pr-botsai.github.io/pmgpt-council/assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PMGPT Agent Arena">
+  <meta name="twitter:description" content="One task enters. Multiple agents investigate and debate. One defensible result leaves.">
+  <meta name="twitter:image" content="https://pr-botsai.github.io/pmgpt-council/assets/social-preview.png">
+
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/styles.css?v=2">
+  <link rel="stylesheet" href="assets/styles-v2.css?v=2">
 </head>
 <body>
   <a class="skip-link" href="#arena">Skip to arena</a>
@@ -16,9 +30,7 @@
   <div class="app-shell">
     <header class="topbar">
       <div class="brand-block">
-        <span class="brand-glyph" aria-hidden="true">
-          <i></i><i></i><i></i>
-        </span>
+        <span class="brand-glyph" aria-hidden="true"><i></i><i></i><i></i></span>
         <div>
           <strong>PMGPT</strong>
           <span>AGENT ARENA</span>
@@ -34,6 +46,7 @@
       </div>
 
       <div class="topbar-stats">
+        <span class="mode-badge" data-mode-badge title="Orchestration source">SIMULATED</span>
         <button class="status-pill" type="button" data-open-tools>
           <span>TOOLS</span>
           <b data-tool-count>4</b>
@@ -102,10 +115,10 @@
             <div><small>CAPABILITIES</small><strong>Connected tools</strong></div>
           </div>
           <div class="tool-grid">
-            <label><input type="checkbox" checked data-tool><span>WEB</span><small>Live research</small></label>
-            <label><input type="checkbox" checked data-tool><span>VERIFY</span><small>Source checks</small></label>
-            <label><input type="checkbox" checked data-tool><span>CODE</span><small>Python sandbox</small></label>
-            <label><input type="checkbox" checked data-tool><span>MCP</span><small>Private data</small></label>
+            <label><input type="checkbox" checked data-tool="web"><span>WEB</span><small>Live research</small></label>
+            <label><input type="checkbox" checked data-tool="verify"><span>VERIFY</span><small>Source checks</small></label>
+            <label><input type="checkbox" checked data-tool="code"><span>CODE</span><small>Python sandbox</small></label>
+            <label><input type="checkbox" checked data-tool="mcp"><span>MCP</span><small>Private data</small></label>
           </div>
         </section>
 
@@ -133,7 +146,7 @@
           <span class="launch-icon">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7V5z"/></svg>
           </span>
-          <span><strong>Launch Council</strong><small>Research → Debate → Vote</small></span>
+          <span><strong>Launch council</strong><small>Research → Debate → Vote</small></span>
         </button>
       </aside>
 
@@ -148,6 +161,7 @@
           <div class="stage" data-stage="4"><span>4</span><div><small>PHASE</small><strong>Vote</strong></div></div>
           <i></i>
           <div class="stage" data-stage="5"><span>5</span><div><small>PHASE</small><strong>Winner</strong></div></div>
+          <span class="round-badge" data-round-badge>NOT STARTED</span>
         </nav>
 
         <section class="agent-workbench" aria-labelledby="workbench-title">
@@ -161,23 +175,23 @@
 
           <div class="agent-card-grid" data-agent-cards>
             <article class="agent-card openai" data-agent-card="openai">
-              <header><span class="model-avatar">O</span><div><strong>OpenAI</strong><small>Lead researcher</small></div><span class="agent-state" data-agent-state>STANDBY</span></header>
-              <div class="terminal-log" data-agent-log><p><i>›</i> Awaiting mission input...</p></div>
+              <header><span class="model-avatar">O</span><div><strong>OpenAI</strong><small>Lead researcher</small></div><span class="agent-state" data-agent-state>READY</span></header>
+              <div class="terminal-log" data-agent-log><p class="muted"><i>›</i> Awaiting mission input…</p></div>
               <button type="button" class="expand-log" data-expand-log>Expand audit log</button>
             </article>
             <article class="agent-card claude" data-agent-card="claude">
-              <header><span class="model-avatar">C</span><div><strong>Claude</strong><small>Critical analyst</small></div><span class="agent-state" data-agent-state>STANDBY</span></header>
-              <div class="terminal-log" data-agent-log><p><i>›</i> Awaiting mission input...</p></div>
+              <header><span class="model-avatar">C</span><div><strong>Claude</strong><small>Critical analyst</small></div><span class="agent-state" data-agent-state>READY</span></header>
+              <div class="terminal-log" data-agent-log><p class="muted"><i>›</i> Awaiting mission input…</p></div>
               <button type="button" class="expand-log" data-expand-log>Expand audit log</button>
             </article>
             <article class="agent-card grok" data-agent-card="grok">
-              <header><span class="model-avatar">G</span><div><strong>Grok / Llama</strong><small>Contrarian reviewer</small></div><span class="agent-state" data-agent-state>STANDBY</span></header>
-              <div class="terminal-log" data-agent-log><p><i>›</i> Awaiting mission input...</p></div>
+              <header><span class="model-avatar">G</span><div><strong>Grok / Llama</strong><small>Contrarian reviewer</small></div><span class="agent-state" data-agent-state>READY</span></header>
+              <div class="terminal-log" data-agent-log><p class="muted"><i>›</i> Awaiting mission input…</p></div>
               <button type="button" class="expand-log" data-expand-log>Expand audit log</button>
             </article>
             <article class="agent-card gemini hidden-agent" data-agent-card="gemini">
-              <header><span class="model-avatar">M</span><div><strong>Gemini</strong><small>Evidence mapper</small></div><span class="agent-state" data-agent-state>STANDBY</span></header>
-              <div class="terminal-log" data-agent-log><p><i>›</i> Awaiting mission input...</p></div>
+              <header><span class="model-avatar">M</span><div><strong>Gemini</strong><small>Evidence mapper</small></div><span class="agent-state" data-agent-state>OFFLINE</span></header>
+              <div class="terminal-log" data-agent-log><p class="muted"><i>›</i> Awaiting mission input…</p></div>
               <button type="button" class="expand-log" data-expand-log>Expand audit log</button>
             </article>
           </div>
@@ -190,7 +204,7 @@
               <h2 id="debate-title">The arena</h2>
             </div>
             <div class="feed-controls">
-              <button type="button" class="quiet-button" data-filter-evidence>Evidence only</button>
+              <button type="button" class="quiet-button" data-filter-evidence aria-pressed="false">Evidence only</button>
               <button type="button" class="quiet-button" data-collapse-feed>Collapse threads</button>
             </div>
           </div>
@@ -199,7 +213,7 @@
             <div class="empty-state">
               <span class="empty-orbit"><i></i><i></i><i></i></span>
               <h3>No debate in progress</h3>
-              <p>Enter a task, choose your agents, and launch the council. Their research, proposals, rebuttals, and votes will appear here.</p>
+              <p>Enter a task, choose your agents, and launch the council. Research, proposals, rebuttals, and votes appear here.</p>
             </div>
           </div>
         </section>
@@ -207,14 +221,14 @@
         <section class="command-dock">
           <div class="dock-context">
             <small>HUMAN DIRECTIVE</small>
-            <input type="text" placeholder="Tell the agents what to verify, reconsider, or prioritize..." data-human-directive>
+            <input type="text" placeholder="Tell the agents what to verify, reconsider, or prioritize…" data-human-directive>
           </div>
           <button type="button" class="dock-button" data-send-directive disabled>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
             Send
           </button>
           <button type="button" class="dock-button warning" data-force-round disabled>Force round</button>
-          <button type="button" class="dock-button primary" data-synthesize disabled>Declare winner</button>
+          <button type="button" class="dock-button primary" data-synthesize disabled>Score and declare</button>
         </section>
       </section>
 
@@ -222,15 +236,24 @@
         <section class="judge-section scoreboard-section">
           <div class="section-label compact">
             <span>LIVE</span>
-            <div><small>JUDGMENT ENGINE</small><strong>Win probability</strong></div>
+            <div><small>JUDGMENT ENGINE</small><strong>Weighted standing</strong></div>
           </div>
           <div class="scoreboard" data-scoreboard>
-            <div data-score-row="openai"><div><span class="score-dot openai"></span><strong>OpenAI</strong><b data-score>34%</b></div><progress max="100" value="34"></progress></div>
-            <div data-score-row="claude"><div><span class="score-dot claude"></span><strong>Claude</strong><b data-score>33%</b></div><progress max="100" value="33"></progress></div>
-            <div data-score-row="grok"><div><span class="score-dot grok"></span><strong>Grok / Llama</strong><b data-score>33%</b></div><progress max="100" value="33"></progress></div>
+            <div data-score-row="openai"><div><span class="score-dot openai"></span><strong>OpenAI</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
+            <div data-score-row="claude"><div><span class="score-dot claude"></span><strong>Claude</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
+            <div data-score-row="grok"><div><span class="score-dot grok"></span><strong>Grok / Llama</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
             <div class="hidden-agent" data-score-row="gemini"><div><span class="score-dot gemini"></span><strong>Gemini</strong><b data-score>0%</b></div><progress max="100" value="0"></progress></div>
           </div>
-          <div class="score-legend"><span>Evidence</span><span>Defense</span><span>Feasibility</span></div>
+          <div class="score-legend"><span>Scored after cross-examination</span></div>
+        </section>
+
+        <section class="judge-section usage-section">
+          <div class="judge-heading"><small>RUNTIME AND BUDGET</small><span data-usage-tokens>0</span></div>
+          <div class="usage-row">
+            <div><span>Elapsed</span><b data-usage-time>00:00</b></div>
+            <div><span>Spend</span><b data-usage-cost>$0.00</b></div>
+          </div>
+          <div class="usage-meter"><progress max="100" value="0" data-usage-bar></progress></div>
         </section>
 
         <section class="judge-section evidence-section">
@@ -247,7 +270,7 @@
           <div class="judge-heading"><small>CONSOLIDATED CONTEXT</small><button type="button" data-clear-context>Clear</button></div>
           <div class="context-column">
             <div>
-              <h3><span class="context-icon accepted">✓</span> Accepted claims</h3>
+              <h3><span class="context-icon accepted">✓</span> Operator-accepted</h3>
               <ul data-accepted-context><li class="muted">Nothing accepted yet.</li></ul>
             </div>
             <div>
@@ -264,13 +287,36 @@
         <section class="judge-section verdict-section" data-verdict-panel>
           <div class="judge-heading"><small>FINAL VERDICT</small><span class="verdict-state" data-verdict-state>NOT READY</span></div>
           <div class="verdict-empty" data-verdict-empty>
-            The winning answer will appear after anonymous scoring and synthesis.
+            The winning answer appears after blind scoring and synthesis.
           </div>
           <div class="verdict-content" data-verdict-content hidden>
             <div class="winner-banner"><span>WINNER</span><strong data-winner-name>—</strong><b data-winner-score>—</b></div>
             <p data-final-answer></p>
+
+            <details class="verdict-detail" open>
+              <summary>Why it won</summary>
+              <div class="rubric" data-scorecard></div>
+            </details>
+            <details class="verdict-detail">
+              <summary>Agreed points</summary>
+              <ul data-consensus></ul>
+            </details>
+            <details class="verdict-detail">
+              <summary>Minority objections</summary>
+              <ul data-dissent></ul>
+            </details>
+            <details class="verdict-detail">
+              <summary>Remaining uncertainty</summary>
+              <ul data-uncertainty></ul>
+            </details>
+            <details class="verdict-detail">
+              <summary>Next actions</summary>
+              <ul data-next-actions></ul>
+            </details>
+
             <div class="verdict-actions">
-              <button type="button" data-copy-verdict>Copy result</button>
+              <button type="button" data-copy-verdict>Copy answer</button>
+              <button type="button" data-export-markdown>Export report</button>
               <button type="button" data-export-session>Export JSON</button>
             </div>
           </div>
@@ -279,8 +325,16 @@
     </main>
   </div>
 
+  <dialog class="history-dialog" data-history-dialog>
+    <div class="history-head">
+      <strong>Claim revision history</strong>
+      <button type="button" data-close-history aria-label="Close">×</button>
+    </div>
+    <div data-history-body></div>
+  </dialog>
+
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script src="assets/app.js"></script>
+  <script type="module" src="assets/js/main.js?v=2"></script>
 </body>
 </html>
