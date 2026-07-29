@@ -4,6 +4,32 @@ import { detectScenario } from './scenarios.js';
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Any agent the scenario has no script for still participates, using a
+// role-shaped generic plan, rather than being reported as a failure.
+const GENERIC_RESEARCH = [
+  ['web', 'Reading the task and pulling the load-bearing terms', 'normal'],
+  ['web', 'Gathering candidate sources', 'normal'],
+  ['verify', 'Position drafted', 'success']
+];
+
+const genericProposal = (key) => ({
+  intro: `${AGENTS[key]?.role || 'Council member'} position.`,
+  claims: [
+    {
+      text: 'This session ran on a scripted scenario, so this agent contributes method rather than domain evidence: the criterion must be fixed before options are ranked.',
+      type: 'normative',
+      evidence: [],
+      verification: 'reasoned'
+    },
+    {
+      text: 'Any claim without a traceable source should be labelled as reasoning, not presented as fact.',
+      type: 'normative',
+      evidence: [],
+      verification: 'reasoned'
+    }
+  ]
+});
+
 // Emits exactly the event stream that backend/worker.js emits, so the UI
 // does not know or care which one is driving it.
 export class SimulatedTransport {
@@ -46,6 +72,16 @@ export class SimulatedTransport {
       rules
     });
 
+    // Say plainly when no scripted scenario matched, instead of letting
+    // generic procedural filler look like a real debate about the topic.
+    if (this.scenario.key === 'generic') {
+      this.bus.emit(EVENTS.TOOL_FAILED, {
+        agent: agents[0],
+        tool: 'router',
+        text: 'No scripted scenario matches this question — running a generic method council. Connect the backend with ?api= for a real answer.'
+      });
+    }
+
     this.scenario.evidence.forEach((item) => this.bus.emit(EVENTS.EVIDENCE_CREATED, {
       ...item,
       retrieved_at: new Date().toISOString()
@@ -66,21 +102,12 @@ export class SimulatedTransport {
     agents.forEach((key) => this.bus.emit(EVENTS.AGENT_STARTED, { agent: key, status: 'researching' }));
 
     const depth = rules.rigor; // 1 fast, 2 balanced, 3 high
-    const plans = agents.map((key) => {
-      const lines = this.scenario.research[key] || [];
+    const active = agents.map((key) => {
+      const lines = this.scenario.research[key] || GENERIC_RESEARCH;
       const take = Math.max(2, Math.ceil((lines.length * depth) / 3));
       return { key, lines: lines.slice(0, take) };
     });
 
-    // An agent with no research plan is treated as a provider failure.
-    plans.filter((plan) => !plan.lines.length).forEach((plan) => {
-      this.bus.emit(EVENTS.AGENT_FAILED, {
-        agent: plan.key,
-        reason: 'No provider response within the run limit'
-      });
-    });
-
-    const active = plans.filter((plan) => plan.lines.length);
     const maxLines = Math.max(0, ...active.map((plan) => plan.lines.length));
 
     for (let line = 0; line < maxLines; line += 1) {
@@ -131,8 +158,7 @@ export class SimulatedTransport {
 
     for (const key of agents) {
       if (this.store.session.agents[key]?.status === 'failed') continue;
-      const proposal = this.scenario.proposals[key];
-      if (!proposal) continue;
+      const proposal = this.scenario.proposals[key] || genericProposal(key);
       const claimIds = this.registerClaims(key, proposal.claims, 1);
       this.bus.emit(EVENTS.MESSAGE_CREATED, {
         message_id: newId('msg'),
@@ -194,6 +220,30 @@ export class SimulatedTransport {
       }
 
       await this.pace(400);
+    }
+
+    // Agents with no scripted rebuttal still take a turn, so an unscripted
+    // council does not sit silent through the debate phase.
+    const spoke = new Set(available.map((item) => item.agent));
+    for (const key of live.filter((candidate) => !spoke.has(candidate))) {
+      const target = live.find((candidate) => candidate !== key);
+      if (!target) continue;
+      const ids = this.registerClaims(`${key}-r${round}-generic`, [{
+        text: 'I have no source-backed objection to raise here; I concede the point to whichever proposal carries traceable evidence.',
+        type: 'position',
+        evidence: [],
+        verification: 'reasoned'
+      }], round);
+      this.bus.emit(EVENTS.REBUTTAL_CREATED, {
+        message_id: newId('msg'),
+        type: 'rebuttal',
+        agent: key,
+        target,
+        badge: 'NO OBJECTION',
+        claim_ids: ids
+      });
+      this.charge(400);
+      await this.pace(280);
     }
   }
 
