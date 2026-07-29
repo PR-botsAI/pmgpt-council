@@ -391,10 +391,13 @@ Known ambiguities: ${(s.normalized?.ambiguities || []).join('; ') || 'none recor
 
       const system = `You are ${ROLES[key]}. Critique competing proposals ${intensity}.
 Every critique must name the exact claim id it targets.
-Do not invent sources. If a claim is well supported, say so instead of manufacturing an objection.
+Do not invent sources and do not emit generic concessions.
+An agreement is valid only when it identifies the exact supported claim, explains why its evidence survives review, and states any scope limit.
+Each agent must return at least one substantive analytical review: contradiction, risk, counter-claim, evidence gap, or qualified agreement.
+Never use "synthesis" as a rebuttal stance; synthesis happens only after anonymous voting.
 Return JSON only:
-{"critiques":[{"target_claim_id":string,"stance":"contradiction"|"risk"|"counter-claim"|"evidence gap"|"agreement","text":string,"sources":[{"title":string,"url":string,"publisher":string}]}]}
-Produce at most ${s.rules.critique >= 3 ? 3 : 2} critiques.`;
+{"critiques":[{"target_claim_id":string,"stance":"contradiction"|"risk"|"counter-claim"|"evidence gap"|"qualified agreement","text":string,"sources":[{"title":string,"url":string,"publisher":string}]}]}
+Produce ${s.rules.critique >= 3 ? '2 or 3' : '1 or 2'} substantive critiques.`;
 
       const prompt = `Original task: ${s.task}
 

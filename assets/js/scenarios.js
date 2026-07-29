@@ -59,6 +59,16 @@ export const scenarios = {
         ['verify', 'Building axes: popularity / versatility / distinctiveness', 'normal'],
         ['verify', 'Flagging unsupported universal claims', 'warning'],
         ['mcp', 'Evidence graph complete', 'success']
+      ],
+      kimi: [
+        ['web', 'Comparing the full poll context across years', 'normal'],
+        ['verify', 'Separating measured acceptance from personal recommendation', 'normal'],
+        ['verify', 'Geographic and wording limitations recorded', 'success']
+      ],
+      openrouter: [
+        ['web', 'Testing the leading recommendations against all cited evidence', 'normal'],
+        ['verify', 'Checking whether each conclusion follows from its source', 'normal'],
+        ['verify', 'Conditional recommendation drafted', 'success']
       ]
     },
     proposals: {
@@ -91,6 +101,20 @@ export const scenarios = {
           { text: 'Vanilla maximizes acceptance, chocolate wins on first-choice loyalty, coconut wins on distinctiveness.', type: 'inference', evidence: ['ev_idfa24', 'ev_yougov22'], verification: 'inference' },
           { text: 'The user\'s stated preference should be preserved in the final answer.', type: 'normative', evidence: [], verification: 'reasoned' }
         ]
+      },
+      kimi: {
+        intro: 'The answer should preserve what the evidence can and cannot establish.',
+        claims: [
+          { text: 'The strongest recent support is for vanilla as a broadly accepted U.S. choice, not as an objective global winner.', type: 'methodological', evidence: ['ev_yougov22', 'ev_idfa24'], verification: 'source_supported' },
+          { text: 'Survey year, geography, and question wording materially limit any universal flavor ranking.', type: 'methodological', evidence: ['ev_yougov20', 'ev_yougov22'], verification: 'source_supported' }
+        ]
+      },
+      openrouter: {
+        intro: 'Use a conditional recommendation tied directly to the user’s decision.',
+        claims: [
+          { text: 'For personal enjoyment, the user’s known preference for coconut is more relevant than population polling.', type: 'normative', evidence: [], verification: 'reasoned' },
+          { text: 'For an unknown group, vanilla has the strongest cited evidence as the lower-risk choice.', type: 'inference', evidence: ['ev_yougov22', 'ev_idfa24'], verification: 'inference' }
+        ]
       }
     },
     rebuttals: [
@@ -114,6 +138,14 @@ export const scenarios = {
       {
         agent: 'gemini', target: 'claude', targetClaimIndex: 1, badge: 'EVIDENCE GAP',
         claims: [{ text: 'The forced-choice poll is from 2020 and should be labelled as older evidence when compared against 2022 and 2024 data.', type: 'methodological', evidence: ['ev_yougov20'], verification: 'source_supported' }]
+      },
+      {
+        agent: 'kimi', target: 'gemini', targetClaimIndex: 0, badge: 'UNSUPPORTED INFERENCE',
+        claims: [{ text: 'The cited polls support vanilla acceptance and chocolate first-choice strength, but they do not measure coconut “distinctiveness”; that part must be removed or explicitly labelled as opinion.', type: 'methodological', evidence: ['ev_yougov20', 'ev_yougov22'], verification: 'source_supported' }]
+      },
+      {
+        agent: 'openrouter', target: 'openai', targetClaimIndex: 2, badge: 'DECISION SPLIT',
+        claims: [{ text: 'The crowd-serving recommendation is defensible only after the answer states that the individual decision uses a different criterion and can still favor coconut.', type: 'normative', evidence: ['ev_yougov22'], verification: 'inference' }]
       }
     ],
     synthesis: {
@@ -169,6 +201,16 @@ export const scenarios = {
       gemini: [
         ['mcp', 'Normalizing latency and cost benchmarks', 'normal'],
         ['verify', 'Service envelope undefined in the request', 'warning']
+      ],
+      kimi: [
+        ['verify', 'Tracing replay, recovery, and regional failure paths', 'normal'],
+        ['code', 'Checking queue and consumer invariants end to end', 'normal'],
+        ['verify', 'Operational gaps recorded', 'success']
+      ],
+      openrouter: [
+        ['code', 'Comparing reserved, serverless, and hybrid capacity', 'normal'],
+        ['verify', 'Testing the recommendation against the service envelope', 'normal'],
+        ['verify', 'Decision conditions recorded', 'success']
       ]
     },
     proposals: {
@@ -199,6 +241,20 @@ export const scenarios = {
         claims: [
           { text: 'Throughput, latency, duplicate tolerance, RPO and RTO must be fixed before any component choice.', type: 'normative', evidence: [], verification: 'reasoned' }
         ]
+      },
+      kimi: {
+        intro: 'Make replay and recovery behavior explicit across every boundary.',
+        claims: [
+          { text: 'Dead-letter handling, replay checkpoints, and idempotency records must share a documented retention policy.', type: 'design', evidence: [], verification: 'reasoned' },
+          { text: 'Regional recovery is incomplete until replication lag is measured against the required RPO and RTO.', type: 'design', evidence: [], verification: 'reasoned' }
+        ]
+      },
+      openrouter: {
+        intro: 'Choose capacity only after measuring sustained and burst demand separately.',
+        claims: [
+          { text: 'A hybrid pool is justified only if reserved capacity covers the measured baseline and burst capacity is load-tested above it.', type: 'inference', evidence: ['ev_internal_load'], verification: 'inference' },
+          { text: 'The architecture decision should remain reversible until the service envelope and cost curve are validated.', type: 'design', evidence: ['ev_internal_load'], verification: 'inference' }
+        ]
       }
     },
     rebuttals: [
@@ -217,6 +273,14 @@ export const scenarios = {
       {
         agent: 'gemini', target: 'grok', targetClaimIndex: 0, badge: 'EVIDENCE GAP',
         claims: [{ text: 'The cost comparison rests on one internal telemetry sample and should not be treated as a general result.', type: 'methodological', evidence: ['ev_internal_load'], verification: 'source_supported' }]
+      },
+      {
+        agent: 'kimi', target: 'claude', targetClaimIndex: 1, badge: 'RECOVERY GAP',
+        claims: [{ text: 'Asynchronous replication is not enough by itself; the proposal must define replay checkpoints, retention, and the acceptable replication lag.', type: 'design', evidence: [], verification: 'reasoned' }]
+      },
+      {
+        agent: 'openrouter', target: 'grok', targetClaimIndex: 1, badge: 'FEASIBILITY CHECK',
+        claims: [{ text: 'Reserved baseline capacity is only economical after sustained demand and utilization targets are measured; the current evidence supports a test, not a final sizing decision.', type: 'methodological', evidence: ['ev_internal_load'], verification: 'source_supported' }]
       }
     ],
     synthesis: {

@@ -89,3 +89,34 @@
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+
+/* Simulator truthfulness guard */
+.simulation-notice {
+  display: grid;
+  gap: .55rem;
+  margin-top: .85rem;
+  padding: .8rem;
+  border: 1px solid rgba(255, 190, 92, .38);
+  border-radius: 10px;
+  background: rgba(255, 190, 92, .08);
+  color: #d9dce5;
+  font-size: .75rem;
+  line-height: 1.45;
+}
+.simulation-notice[hidden] { display: none; }
+.simulation-notice strong { color: #ffcf7d; letter-spacing: .04em; text-transform: uppercase; }
+.simulation-notice button {
+  justify-self: start;
+  border: 1px solid rgba(255, 207, 125, .45);
+  border-radius: 7px;
+  padding: .4rem .6rem;
+  background: transparent;
+  color: #ffcf7d;
+  cursor: pointer;
+}
+.simulation-notice.error {
+  border-color: rgba(255, 105, 125, .58);
+  background: rgba(255, 75, 105, .09);
+}
+.simulation-notice.error strong { color: #ff8ca0; }

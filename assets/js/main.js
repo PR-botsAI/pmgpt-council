@@ -27,7 +27,8 @@ const ui = {
   forceRound: $('[data-force-round]'),
   directive: $('[data-human-directive]'),
   sendDirective: $('[data-send-directive]'),
-  modeBadge: $('[data-mode-badge]')
+  modeBadge: $('[data-mode-badge]'),
+  simulationNotice: $('[data-simulation-notice]')
 };
 
 const rules = () => ({
@@ -260,6 +261,14 @@ const startSession = async () => {
     return;
   }
 
+  if (transport.mode === 'simulated' && !transport.supports(task)) {
+    ui.simulationNotice?.classList.add('error');
+    ui.simulationNotice?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    render.notify('Custom research is unavailable in evidence demo mode. Connect the secure backend or load the built-in demo.');
+    return;
+  }
+
+  ui.simulationNotice?.classList.remove('error');
   bus.reset();
   store.reset();
   render.resetFeed();
@@ -425,6 +434,12 @@ ui.task.addEventListener('keydown', (event) => {
   if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') startSession();
 });
 $('[data-clear-task]').addEventListener('click', () => { ui.task.value = ''; ui.task.focus(); });
+$('[data-load-demo]')?.addEventListener('click', () => {
+  ui.task.value = 'What is the best ice cream flavor? I think coconut.';
+  ui.simulationNotice?.classList.remove('error');
+  ui.task.focus();
+  render.notify('Evidence-backed demo loaded. Launch the council when ready.');
+});
 
 $('[data-clear-context]').addEventListener('click', () => {
   Object.values(store.session.claims).forEach((claim) => {
@@ -543,8 +558,9 @@ setInterval(() => {
   }
 }, 1000);
 
-ui.modeBadge.textContent = transport.mode === 'live' ? 'LIVE BACKEND' : 'SIMULATED';
+ui.modeBadge.textContent = transport.mode === 'live' ? 'LIVE BACKEND' : 'EVIDENCE DEMO';
 ui.modeBadge.classList.toggle('live', transport.mode === 'live');
+if (ui.simulationNotice) ui.simulationNotice.hidden = transport.mode === 'live';
 
 syncLabels();
 syncTools();
