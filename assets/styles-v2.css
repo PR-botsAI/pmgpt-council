@@ -1,0 +1,91 @@
+/* ---------------------------------------------------------------------
+   v2 — claim-level controls, runtime meters, scorecard, revision history
+   Loaded after styles.css. Uses the same token set.
+   --------------------------------------------------------------------- */
+
+.mode-badge { padding: 4px 7px; border: 1px solid var(--line); border-radius: 5px; color: var(--faint); background: #0b1019; font-size: 8px; font-weight: 900; letter-spacing: .09em; }
+.mode-badge.live { color: var(--green); border-color: rgba(81,216,138,.4); background: rgba(81,216,138,.06); }
+
+.round-badge { margin-left: auto; padding: 4px 8px; border: 1px solid var(--line); border-radius: 5px; color: var(--faint); background: #0b1019; font-size: 8px; font-weight: 900; letter-spacing: .08em; white-space: nowrap; }
+
+.tool-tag { display: inline-block; margin-right: 6px; padding: 0 4px; border-radius: 3px; color: #0a0f18; background: #3d5878; font-size: 8px; font-weight: 800; text-transform: uppercase; }
+.terminal-log .error { color: var(--red); }
+.terminal-log .muted { color: var(--faint); }
+.agent-card.failed { border-color: rgba(255,107,122,.4); }
+.agent-card.failed .agent-state { color: var(--red); border-color: rgba(255,107,122,.4); }
+
+.message-intro { margin: 10px 0 4px 33px; color: var(--text); font-size: 11px; font-weight: 650; line-height: 1.5; }
+.quoted-claim { margin: 6px 0 8px 33px; padding: 7px 9px; border-left: 2px solid #354056; border-radius: 0 5px 5px 0; color: var(--faint); background: rgba(255,255,255,.015); font-size: 9px; line-height: 1.5; }
+.quoted-claim code { color: var(--muted); font-size: 8px; }
+
+.claim-stack { margin: 8px 0 0 33px; display: grid; gap: 8px; }
+.claim { padding: 9px 10px; border: 1px solid var(--line-soft); border-radius: 7px; background: rgba(255,255,255,.014); }
+.claim-dim { opacity: .48; }
+.claim-dim .claim-text { text-decoration: line-through; text-decoration-color: rgba(255,107,122,.5); }
+.claim-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 6px; }
+.claim-id { padding: 2px 5px; border-radius: 4px; color: var(--faint); background: #080c13; font-family: "SFMono-Regular", Consolas, monospace; font-size: 8px; }
+.claim-flag { padding: 2px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--faint); font-size: 7px; font-weight: 900; letter-spacing: .07em; }
+.claim-flag.v-source_supported { color: var(--green); border-color: rgba(81,216,138,.35); }
+.claim-flag.v-source_cited { color: var(--cyan); border-color: rgba(76,215,255,.3); }
+.claim-flag.v-inference, .claim-flag.v-reasoned { color: var(--blue); border-color: rgba(93,140,255,.32); }
+.claim-flag.v-unsupported { color: var(--red); border-color: rgba(255,107,122,.4); }
+.claim-flag.s-contested, .claim-flag.s-challenged { color: var(--yellow); border-color: rgba(255,209,102,.4); }
+.claim-flag.s-revised { color: var(--purple); border-color: rgba(162,120,255,.4); }
+.claim-flag.s-withdrawn, .claim-flag.s-rejected { color: var(--red); border-color: rgba(255,107,122,.4); }
+.claim-flag.s-user_accepted, .claim-flag.s-verified { color: var(--green); border-color: rgba(81,216,138,.35); }
+.claim-flag.s-pinned { color: var(--cyan); border-color: rgba(76,215,255,.4); }
+.claim-history { margin-left: auto; padding: 2px 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--purple); background: transparent; cursor: pointer; font-size: 7px; font-weight: 800; }
+.claim-text { margin: 0; color: #cbd4e5; font-size: 11px; line-height: 1.55; }
+.claim-text strong { color: var(--text); }
+.claim-text code { padding: 1px 4px; border-radius: 3px; background: #080c13; font-size: 10px; }
+.claim .source-row { margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 5px; }
+.source-chip em { color: var(--faint); font-style: normal; }
+.source-chip.internal i { background: var(--yellow); }
+.claim-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.claim-actions button { padding: 4px 7px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); background: #0a0f18; cursor: pointer; font-size: 8px; font-weight: 800; }
+.claim-actions button[data-action="accept"]:hover, .claim-actions button[data-action="accept"].selected { color: var(--green); border-color: rgba(81,216,138,.45); }
+.claim-actions button[data-action="deny"]:hover, .claim-actions button[data-action="deny"].selected { color: var(--red); border-color: rgba(255,107,122,.45); }
+.claim-actions button[data-action="challenge"]:hover, .claim-actions button[data-action="challenge"].selected { color: var(--yellow); border-color: rgba(255,209,102,.45); }
+.claim-actions button[data-action="pin"]:hover, .claim-actions button[data-action="pin"].selected { color: var(--cyan); border-color: rgba(76,215,255,.45); }
+.claim-actions button[data-action="followup"]:hover { color: var(--purple); border-color: rgba(162,120,255,.45); }
+.debate-message.collapsed .claim-stack, .debate-message.collapsed .message-intro, .debate-message.collapsed .quoted-claim { display: none; }
+.debate-message.human { --accent: var(--yellow); }
+
+.usage-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.usage-row div { padding: 8px 9px; border: 1px solid var(--line-soft); border-radius: 6px; background: #0b1019; }
+.usage-row span { display: block; color: var(--faint); font-size: 8px; }
+.usage-row b { display: block; margin-top: 3px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.usage-meter progress { width: 100%; height: 4px; }
+.usage-meter.near-limit progress::-webkit-progress-value { background: var(--yellow); }
+.usage-meter.near-limit progress::-moz-progress-bar { background: var(--yellow); }
+
+.verdict-detail { margin: 8px 0; border: 1px solid var(--line-soft); border-radius: 6px; background: #0b1019; }
+.verdict-detail summary { padding: 7px 9px; color: var(--muted); cursor: pointer; font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.verdict-detail[open] summary { border-bottom: 1px solid var(--line-soft); }
+.verdict-detail ul { margin: 0; padding: 9px 9px 9px 24px; color: #c6d0e1; font-size: 9px; line-height: 1.6; }
+.verdict-detail li { margin-bottom: 5px; }
+.verdict-detail .muted { color: var(--faint); }
+.rubric { padding: 9px; display: grid; gap: 5px; }
+.rubric-row { display: grid; grid-template-columns: 82px 1fr 24px 18px; align-items: center; gap: 6px; color: var(--muted); font-size: 8px; }
+.rubric-row progress { width: 100%; height: 4px; }
+.rubric-row b { color: var(--text); font-variant-numeric: tabular-nums; text-align: right; }
+.rubric-row em { color: var(--faint); font-style: normal; text-align: right; }
+.rubric-note { margin: 4px 9px 9px !important; color: var(--yellow) !important; font-size: 8px !important; }
+.verdict-actions { grid-template-columns: repeat(3, 1fr); }
+
+.history-dialog { width: min(560px, 92vw); padding: 0; border: 1px solid var(--line); border-radius: 10px; color: var(--text); background: var(--panel-2); }
+.history-dialog::backdrop { background: rgba(4, 6, 11, .72); }
+.history-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--line); font-size: 11px; }
+.history-head button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 18px; line-height: 1; }
+.history-dialog > div:last-child { padding: 14px; max-height: 60vh; overflow: auto; }
+.history-current, .history-step { margin: 0 0 6px; color: var(--faint); font-size: 8px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+.history-dialog blockquote { margin: 0 0 14px; padding: 9px 11px; border-left: 2px solid var(--cyan); border-radius: 0 6px 6px 0; background: #0b1019; color: #cbd4e5; font-size: 10px; line-height: 1.55; }
+.history-dialog blockquote.old { border-left-color: #354056; color: var(--faint); }
+
+@media (max-width: 900px) {
+  .claim-stack, .message-intro, .quoted-claim { margin-left: 0; }
+  .round-badge { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
