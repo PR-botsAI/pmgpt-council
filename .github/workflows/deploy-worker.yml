@@ -1,0 +1,63 @@
+name: Deploy Arena Worker
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: arena-worker-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy secure staging backend
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Verify backend syntax
+        run: node --check backend/worker.js
+
+      - name: Verify required deployment secrets
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ARENA_ACCESS_TOKEN: ${{ secrets.ARENA_ACCESS_TOKEN }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          test -n "$OPENROUTER_API_KEY"
+          test -n "$ARENA_ACCESS_TOKEN"
+
+      - name: Create ephemeral Worker secrets file
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ARENA_ACCESS_TOKEN: ${{ secrets.ARENA_ACCESS_TOKEN }}
+        run: |
+          jq -n \
+            --arg openrouter "$OPENROUTER_API_KEY" \
+            --arg access "$ARENA_ACCESS_TOKEN" \
+            '{OPENROUTER_API_KEY: $openrouter, ARENA_ACCESS_TOKEN: $access}' \
+            > "$RUNNER_TEMP/arena-worker-secrets.json"
+
+      - name: Deploy Worker
+        working-directory: backend
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 deploy --secrets-file "$RUNNER_TEMP/arena-worker-secrets.json"
+
+      - name: Remove ephemeral secrets file
+        if: always()
+        run: rm -f "$RUNNER_TEMP/arena-worker-secrets.json"

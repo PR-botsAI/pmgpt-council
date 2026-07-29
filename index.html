@@ -80,6 +80,11 @@
             <span>This static page can demonstrate the arena with its built-in evidence cases, but it cannot research arbitrary tasks without the secure live backend.</span>
             <button type="button" data-load-demo>Load ice-cream demo</button>
           </div>
+          <label class="live-access" data-live-access hidden>
+            <span>Staging access token</span>
+            <input type="password" data-access-token autocomplete="off" spellcheck="false" placeholder="Enter access token">
+            <small>Kept only in this page’s memory. Provider keys remain on the backend.</small>
+          </label>
         </section>
 
         <section class="rail-section" data-model-selector>

@@ -18,9 +18,22 @@
 
 const cors = (origin) => ({
   'access-control-allow-origin': origin || '*',
-  'access-control-allow-headers': 'content-type',
-  'access-control-allow-methods': 'GET,POST,OPTIONS'
+  'access-control-allow-headers': 'content-type,x-arena-access',
+  'access-control-allow-methods': 'GET,POST,OPTIONS',
+  'access-control-max-age': '86400',
+  vary: 'Origin'
 });
+
+const safeEqual = (left, right) => {
+  const a = String(left || '');
+  const b = String(right || '');
+  let mismatch = a.length ^ b.length;
+  const size = Math.max(a.length, b.length);
+  for (let index = 0; index < size; index += 1) {
+    mismatch |= (a.charCodeAt(index) || 0) ^ (b.charCodeAt(index) || 0);
+  }
+  return mismatch === 0;
+};
 
 export default {
   async fetch(request, env) {
@@ -29,6 +42,19 @@ export default {
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: cors(origin) });
+    }
+
+    if (url.pathname === '/health' && request.method === 'GET') {
+      return json({ ok: true, service: 'pmgpt-council' }, origin);
+    }
+
+    const requestOrigin = request.headers.get('origin');
+    if (requestOrigin && origin !== '*' && requestOrigin !== origin) {
+      return json({ error: 'Origin not allowed' }, origin, 403);
+    }
+
+    if (!env.ARENA_ACCESS_TOKEN || !safeEqual(request.headers.get('x-arena-access'), env.ARENA_ACCESS_TOKEN)) {
+      return json({ error: 'Unauthorized' }, origin, 401);
     }
 
     if (url.pathname === '/api/sessions' && request.method === 'POST') {

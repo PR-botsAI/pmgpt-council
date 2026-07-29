@@ -120,3 +120,32 @@
   background: rgba(255, 75, 105, .09);
 }
 .simulation-notice.error strong { color: #ff8ca0; }
+
+
+.live-access {
+  display: grid;
+  gap: .45rem;
+  margin-top: .85rem;
+  padding: .8rem;
+  border: 1px solid rgba(88, 231, 176, .32);
+  border-radius: 10px;
+  background: rgba(88, 231, 176, .06);
+}
+.live-access[hidden] { display: none; }
+.live-access span {
+  color: #82f0c6;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.live-access input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(130, 240, 198, .3);
+  border-radius: 7px;
+  padding: .65rem .7rem;
+  background: rgba(3, 8, 14, .78);
+  color: #f1f4f8;
+}
+.live-access small { color: #8e98a9; line-height: 1.4; }

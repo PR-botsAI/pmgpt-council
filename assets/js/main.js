@@ -13,9 +13,6 @@ const render = new Renderer(store);
 
 const params = new URLSearchParams(window.location.search);
 const apiBase = params.get('api') || DEFAULT_API;
-const transport = apiBase
-  ? new LiveTransport(bus, store, apiBase)
-  : new SimulatedTransport(bus, store);
 
 const ui = {
   task: $('[data-task-input]'),
@@ -28,8 +25,14 @@ const ui = {
   directive: $('[data-human-directive]'),
   sendDirective: $('[data-send-directive]'),
   modeBadge: $('[data-mode-badge]'),
-  simulationNotice: $('[data-simulation-notice]')
+  simulationNotice: $('[data-simulation-notice]'),
+  liveAccess: $('[data-live-access]'),
+  accessToken: $('[data-access-token]')
 };
+
+const transport = apiBase
+  ? new LiveTransport(bus, store, apiBase, () => ui.accessToken?.value)
+  : new SimulatedTransport(bus, store);
 
 const rules = () => ({
   rigor: Number($('[data-rigor]').value),
@@ -258,6 +261,12 @@ const startSession = async () => {
   if (!task) {
     ui.task.focus();
     render.notify('Enter a task or issue first.');
+    return;
+  }
+
+  if (transport.mode === 'live' && !ui.accessToken?.value.trim()) {
+    ui.accessToken?.focus();
+    render.notify('Enter the staging access token before launching the live council.');
     return;
   }
 
@@ -561,6 +570,7 @@ setInterval(() => {
 ui.modeBadge.textContent = transport.mode === 'live' ? 'LIVE BACKEND' : 'EVIDENCE DEMO';
 ui.modeBadge.classList.toggle('live', transport.mode === 'live');
 if (ui.simulationNotice) ui.simulationNotice.hidden = transport.mode === 'live';
+if (ui.liveAccess) ui.liveAccess.hidden = transport.mode !== 'live';
 
 syncLabels();
 syncTools();
