@@ -10,6 +10,10 @@
  *   POST /api/sessions/:id/rounds          force another debate round
  *   POST /api/sessions/:id/synthesize      blind score, then final answer
  *   GET  /api/sessions/:id                 full session snapshot
+ *
+ * Providers: OpenAI, Anthropic, xAI, Google, Moonshot (Kimi), OpenRouter.
+ * OpenRouter doubles as a fallback for every other agent, so a single
+ * OPENROUTER_API_KEY can run the whole council.
  */
 
 const cors = (origin) => ({
@@ -119,11 +123,26 @@ export class CouncilSession {
     return { session: this.session, events: this.events };
   }
 
+  // An agent is usable if it has its own key, or if OpenRouter can stand
+  // in for it. Anything else is dropped before the session starts.
+  usableAgents(requested) {
+    const hasRouter = Boolean(this.env.OPENROUTER_API_KEY);
+    return requested.filter((key) => {
+      if (!PROVIDERS[key]) return false;
+      if (key === 'openrouter') return hasRouter;
+      return hasRouter || Boolean(this.env[PROVIDERS[key].envKey]);
+    });
+  }
+
   async create(body, origin) {
+    const requested = body.agents || ['openai', 'claude', 'grok'];
+    const agents = this.usableAgents(requested);
+
     this.session = {
       id: this.state.id.toString(),
       task: String(body.task || '').slice(0, 4000),
-      agents: (body.agents || ['openai', 'claude', 'grok']).filter((key) => PROVIDERS[key]),
+      agents,
+      dropped: requested.filter((key) => !agents.includes(key)),
       tools: body.tools || ['web', 'verify'],
       rules: { rigor: 3, critique: 2, maxRounds: 3, ...(body.rules || {}) },
       round: 0,
@@ -137,9 +156,15 @@ export class CouncilSession {
     };
     this.events = [];
     await this.save();
+
+    if (!agents.length) {
+      return json({
+        error: 'No usable providers. Set at least one provider key, or OPENROUTER_API_KEY to cover all of them.'
+      }, origin, 400);
+    }
     // Orchestration starts when the client attaches to the stream, so no
     // tokens are spent on an abandoned session.
-    return json({ id: this.session.id, status: 'created' }, origin);
+    return json({ id: this.session.id, status: 'created', agents, dropped: this.session.dropped }, origin);
   }
 
   stream(url) {
@@ -194,6 +219,11 @@ export class CouncilSession {
       rules: s.rules
     });
 
+    s.dropped.forEach((key) => this.emit('agent.failed', {
+      agent: key,
+      reason: 'No API key configured for this provider'
+    }));
+
     // Stage 1 — normalize the request before anyone researches it.
     this.emit('session.state_changed', { phase: 1, round: 1, status: 'researching' });
     s.normalized = await this.normalize();
@@ -233,8 +263,12 @@ export class CouncilSession {
     const system = `You normalize a request before a panel of AI agents researches it.
 Return JSON only:
 {"normalized_question":string,"task_type":string,"ambiguities":[string],"assumptions":[string],"success_criteria":[string]}`;
-    const result = await this.call('openai', system, `Request: ${this.session.task}`, true);
-    return result.json || { normalized_question: this.session.task, ambiguities: [], assumptions: [], success_criteria: [] };
+    try {
+      const result = await this.call(this.session.agents[0], system, `Request: ${this.session.task}`, true);
+      return result.json || { normalized_question: this.session.task, ambiguities: [], assumptions: [], success_criteria: [] };
+    } catch {
+      return { normalized_question: this.session.task, ambiguities: [], assumptions: [], success_criteria: [] };
+    }
   }
 
   async propose(agentKey) {
@@ -683,17 +717,47 @@ Operator-denied premises (must be excluded): ${denied.map((claim) => claim.text)
   }
 
   // ---- provider layer -------------------------------------------------
+  //
+  // Resolution order for every agent:
+  //   1. its own provider key, if set
+  //   2. OpenRouter, if that call fails or no native key exists
+  // So OPENROUTER_API_KEY alone is enough to run the whole council, and
+  // it also acts as automatic failover for the native providers.
 
   async call(agentKey, system, prompt, wantJson, allowWebSearch = false) {
     const provider = PROVIDERS[agentKey];
     if (!provider) throw new Error(`No provider configured for ${agentKey}`);
-    const key = this.env[provider.envKey];
-    if (!key) throw new Error(`${provider.envKey} is not set`);
 
-    const response = await withTimeout(
-      provider.call({ key, system, prompt, wantJson, allowWebSearch, env: this.env }),
-      45000
-    );
+    const nativeKey = agentKey === 'openrouter' ? null : this.env[provider.envKey];
+    const routerKey = this.env.OPENROUTER_API_KEY;
+    let response;
+
+    if (nativeKey) {
+      try {
+        response = await withTimeout(
+          provider.call({ key: nativeKey, system, prompt, wantJson, allowWebSearch, env: this.env }),
+          45000
+        );
+      } catch (error) {
+        if (!routerKey) throw error;
+        this.emit('tool.failed', {
+          agent: agentKey,
+          tool: 'router',
+          text: `${provider.envKey} failed (${String(error.message).slice(0, 60)}) — retrying via OpenRouter`
+        });
+        response = await withTimeout(
+          openRouterCall({ key: routerKey, agentKey, system, prompt, wantJson, env: this.env }),
+          45000
+        );
+      }
+    } else if (routerKey) {
+      response = await withTimeout(
+        openRouterCall({ key: routerKey, agentKey, system, prompt, wantJson, env: this.env }),
+        45000
+      );
+    } else {
+      throw new Error(`Set ${provider.envKey} or OPENROUTER_API_KEY`);
+    }
 
     let parsed = null;
     if (wantJson) {
@@ -716,8 +780,68 @@ const ROLES = {
   openai: 'the lead researcher',
   claude: 'the critical analyst',
   grok: 'the contrarian reviewer',
-  gemini: 'the evidence mapper'
+  gemini: 'the evidence mapper',
+  kimi: 'the long-context synthesist',
+  openrouter: 'the generalist second opinion'
 };
+
+// OpenRouter slugs move as models ship. Every one is overridable by an
+// env var so you can repoint without a redeploy of this file.
+// Check https://openrouter.ai/models for current ids.
+const OPENROUTER_MODELS = {
+  openai: 'OPENROUTER_MODEL_OPENAI',
+  claude: 'OPENROUTER_MODEL_CLAUDE',
+  grok: 'OPENROUTER_MODEL_GROK',
+  gemini: 'OPENROUTER_MODEL_GEMINI',
+  kimi: 'OPENROUTER_MODEL_KIMI',
+  openrouter: 'OPENROUTER_MODEL_DEFAULT'
+};
+
+const OPENROUTER_FALLBACKS = {
+  openai: 'openai/gpt-5.2',
+  claude: 'anthropic/claude-sonnet-4.6',
+  grok: 'x-ai/grok-4.3',
+  gemini: 'google/gemini-2.5-pro',
+  // kimi-latest always redirects to the newest Kimi, so this does not go
+  // stale when Moonshot ships a new version.
+  kimi: 'moonshotai/kimi-latest',
+  openrouter: 'moonshotai/kimi-latest'
+};
+
+async function openRouterCall({ key, agentKey, system, prompt, wantJson, env }) {
+  const model = env[OPENROUTER_MODELS[agentKey]] || OPENROUTER_FALLBACKS[agentKey] || OPENROUTER_FALLBACKS.openrouter;
+
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${key}`,
+      'content-type': 'application/json',
+      // Attribution headers are optional but put the app on the
+      // OpenRouter dashboard rankings.
+      'HTTP-Referer': env.ALLOWED_ORIGIN || 'https://pr-botsai.github.io',
+      'X-Title': 'PMGPT Agent Arena'
+    },
+    body: JSON.stringify({
+      model,
+      messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }],
+      ...(wantJson ? { response_format: { type: 'json_object' } } : {}),
+      max_tokens: 1600
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`OpenRouter ${response.status} (${model}): ${(await response.text()).slice(0, 120)}`);
+  }
+  const data = await response.json();
+  const tokens = data.usage?.total_tokens || 0;
+  return {
+    text: data.choices?.[0]?.message?.content || '',
+    tokens,
+    // OpenRouter reports actual spend when available; fall back to an
+    // estimate so the budget meter still moves.
+    costCents: typeof data.usage?.cost === 'number' ? data.usage.cost * 100 : (tokens / 1000) * 0.3
+  };
+}
 
 const PROVIDERS = {
   openai: {
@@ -817,6 +941,43 @@ const PROVIDERS = {
         tokens,
         costCents: (tokens / 1000) * 0.35
       };
+    }
+  },
+
+  // Moonshot's global endpoint is OpenAI-compatible. kimi-k3 is the
+  // July 2026 flagship; override with MOONSHOT_MODEL if that moves.
+  kimi: {
+    envKey: 'MOONSHOT_API_KEY',
+    async call({ key, system, prompt, wantJson, env }) {
+      const response = await fetch('https://api.moonshot.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
+        body: JSON.stringify({
+          model: env?.MOONSHOT_MODEL || 'kimi-k3',
+          messages: [{ role: 'system', content: system }, { role: 'user', content: prompt }],
+          ...(wantJson ? { response_format: { type: 'json_object' } } : {}),
+          max_tokens: 1600
+        })
+      });
+      if (!response.ok) {
+        throw new Error(`Moonshot ${response.status}: ${(await response.text()).slice(0, 120)}`);
+      }
+      const data = await response.json();
+      const tokens = data.usage?.total_tokens || 0;
+      return {
+        text: data.choices?.[0]?.message?.content || '',
+        tokens,
+        costCents: (tokens / 1000) * 0.9
+      };
+    }
+  },
+
+  // Pure gateway. It has no native adapter — call() always routes it
+  // through openRouterCall using OPENROUTER_API_KEY.
+  openrouter: {
+    envKey: 'OPENROUTER_API_KEY',
+    async call() {
+      throw new Error('openrouter is routed through openRouterCall');
     }
   }
 };
