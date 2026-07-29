@@ -1,0 +1,34 @@
+/* Accent colours and avatars for the Kimi and OpenRouter agents.
+   Loaded after styles-v2.css. */
+
+:root {
+  --teal: #35d6c3;
+  --pink: #ff7ab8;
+}
+
+.model-toggle.kimi .model-avatar, .agent-card.kimi .model-avatar { color: var(--teal); }
+.model-toggle.openrouter .model-avatar, .agent-card.openrouter .model-avatar { color: var(--pink); }
+
+.debate-message.kimi { --accent: var(--teal); }
+.debate-message.openrouter { --accent: var(--pink); }
+
+.score-dot.kimi { background: var(--teal); }
+.score-dot.openrouter { background: var(--pink); }
+
+[data-score-row="kimi"] progress::-webkit-progress-value { background: var(--teal); }
+[data-score-row="kimi"] progress::-moz-progress-bar { background: var(--teal); }
+[data-score-row="openrouter"] progress::-webkit-progress-value { background: var(--pink); }
+[data-score-row="openrouter"] progress::-moz-progress-bar { background: var(--pink); }
+
+.agent-card.kimi.running { border-color: rgba(53, 214, 195, .36); }
+.agent-card.openrouter.running { border-color: rgba(255, 122, 184, .36); }
+
+/* Six agents no longer fit in one row comfortably. */
+@media (min-width: 1500px) {
+  .agent-card-grid { gap: 8px; }
+}
+.agent-card header small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The router fallback notice uses the tool-failed tone but is a status
+   message, not an error. */
+.terminal-log .error .tool-tag { background: #7a3d55; }
