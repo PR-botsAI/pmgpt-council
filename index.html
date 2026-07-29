@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111f">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="PMGPT Council turns one question into a structured multi-model debate, human-controlled review, and one defensible final answer.">
+  <meta property="og:title" content="PMGPT Council — One question. Multiple models. One defensible answer.">
+  <meta property="og:description" content="Compare, challenge, approve, reject, and synthesize answers from multiple AI models in one controlled workflow.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>PMGPT Council — Multi-Model AI Debate & Consensus</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "PMGPT Council",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "A human-controlled multi-model debate and consensus workflow for AI-assisted decisions.",
+    "url": "https://paymegpt.com/"
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="page-glow page-glow-one" aria-hidden="true"></div>
+  <div class="page-glow page-glow-two" aria-hidden="true"></div>
+
+  <header class="site-header" data-header>
+    <div class="container nav-wrap">
+      <a class="brand" href="#top" aria-label="PMGPT Council home">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="brand-copy">
+          <strong>PMGPT</strong>
+          <small>COUNCIL</small>
+        </span>
+      </a>
+
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle>
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="site-nav" aria-label="Primary navigation" data-nav>
+        <a href="#how-it-works">How it works</a>
+        <a href="#demo">Live preview</a>
+        <a href="#use-cases">Use cases</a>
+        <a href="#architecture">Architecture</a>
+        <a class="nav-cta" href="https://paymegpt.com/" target="_blank" rel="noreferrer">Start with PMGPT</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero section" id="top">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow">
+            <span class="pulse-dot"></span>
+            Human-controlled multi-model intelligence
+          </div>
+          <h1>One question.<br><span>Multiple models.</span><br>One defensible answer.</h1>
+          <p class="hero-lead">Stop trusting the first confident response. PMGPT Council lets leading AI models propose, challenge, score, and improve each other’s work—while you decide what gets accepted, rejected, or carried forward.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#demo">
+              See the council work
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 5l5 5-5 5"/></svg>
+            </a>
+            <a class="button button-secondary" href="#architecture">Explore the system</a>
+          </div>
+          <div class="model-line" aria-label="Compatible model providers">
+            <span>MODEL-AGNOSTIC</span>
+            <div><b>GPT</b><b>CLAUDE</b><b>GEMINI</b><b>GROK</b><b>LLAMA</b></div>
+          </div>
+        </div>
+
+        <div class="hero-console reveal" data-delay="120">
+          <div class="console-shell">
+            <div class="console-topbar">
+              <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span>COUNCIL SESSION / 04</span>
+              <span class="secure-label"><i></i> CONTROLLED</span>
+            </div>
+            <div class="console-question">
+              <small>YOUR QUESTION</small>
+              <p>How should we design an architecture that can handle one million concurrent webhooks?</p>
+            </div>
+            <div class="console-stage-label">
+              <span>ROUND 2 · CROSS-EXAMINATION</span>
+              <span>3 MODELS ACTIVE</span>
+            </div>
+            <div class="agent-stack">
+              <article class="agent-row accepted">
+                <div class="agent-id">A</div>
+                <div class="agent-content">
+                  <div class="agent-meta"><strong>Proposal A</strong><span>Accepted claim</span></div>
+                  <p>Use an event ingestion tier with partitioned queues and idempotent consumers.</p>
+                </div>
+                <div class="status-icon" aria-label="Accepted">✓</div>
+              </article>
+              <article class="agent-row challenged">
+                <div class="agent-id">B</div>
+                <div class="agent-content">
+                  <div class="agent-meta"><strong>Proposal B</strong><span>Under critique</span></div>
+                  <p>Challenges the queue partition strategy and flags regional failover risk.</p>
+                </div>
+                <div class="status-icon" aria-label="Reviewing">!</div>
+              </article>
+              <article class="agent-row listening">
+                <div class="agent-id">C</div>
+                <div class="agent-content">
+                  <div class="agent-meta"><strong>Proposal C</strong><span>Listening</span></div>
+                  <p>Compares both approaches against cost, latency, and operational complexity.</p>
+                </div>
+                <div class="status-icon" aria-label="Listening">···</div>
+              </article>
+            </div>
+            <div class="truth-context">
+              <div>
+                <small>ESTABLISHED CONTEXT</small>
+                <span>Idempotency</span><span>Regional isolation</span><span>Backpressure</span>
+              </div>
+              <button type="button" data-scroll-consensus>Synthesize &amp; decide</button>
+            </div>
+          </div>
+          <div class="floating-chip chip-one"><span>92%</span> confidence</div>
+          <div class="floating-chip chip-two"><span>3×</span> independent review</div>
+        </div>
+      </div>
+
+      <div class="container outcome-strip reveal" data-delay="200">
+        <div class="outcome-negative">
+          <span class="outcome-symbol">×</span>
+          <div><small>SINGLE-MODEL WORKFLOW</small><strong>One answer. One blind spot.</strong></div>
+        </div>
+        <div class="outcome-arrow" aria-hidden="true">→</div>
+        <div class="outcome-positive">
+          <span class="outcome-symbol">✓</span>
+          <div><small>PMGPT COUNCIL</small><strong>Multiple perspectives. One reviewed decision.</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="how-it-works">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div class="eyebrow">The protocol</div>
+          <h2>Not another chat window.<br>A controlled decision process.</h2>
+          <p>Every council session moves through three deliberate phases designed to surface assumptions, expose disagreement, and preserve human judgment.</p>
+        </div>
+
+        <div class="phase-grid">
+          <article class="phase-card reveal">
+            <div class="phase-number">01</div>
+            <div class="phase-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14M5 12h9M5 18h12"/></svg>
+            </div>
+            <small>ROUND ONE</small>
+            <h3>Independent proposals</h3>
+            <p>Your prompt is sent to multiple models in parallel. Each produces an independent answer before seeing any competing response.</p>
+            <ul>
+              <li>Parallel generation</li>
+              <li>Provider diversity</li>
+              <li>Streaming side-by-side</li>
+            </ul>
+          </article>
+
+          <article class="phase-card featured reveal" data-delay="100">
+            <div class="phase-number">02</div>
+            <div class="phase-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h8v8H8zM3 12h5M16 12h5M12 3v5M12 16v5"/></svg>
+            </div>
+            <small>ROUND TWO</small>
+            <h3>Cross-examination</h3>
+            <p>Models critique one another’s assumptions and risks. You can accept strong claims, deny weak ones, or simply listen.</p>
+            <ul>
+              <li>Inter-model critique</li>
+              <li>Accept / Deny / Listen</li>
+              <li>Established truth context</li>
+            </ul>
+          </article>
+
+          <article class="phase-card reveal" data-delay="200">
+            <div class="phase-number">03</div>
+            <div class="phase-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM8 9h8M8 13h5"/></svg>
+            </div>
+            <small>FINAL ROUND</small>
+            <h3>Blind consensus</h3>
+            <p>Responses are anonymized, scored, and synthesized into a final recommendation with agreements, conflicts, and caveats intact.</p>
+            <ul>
+              <li>Anonymous evaluation</li>
+              <li>Multi-criteria scoring</li>
+              <li>Chairman synthesis</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section demo-section" id="demo">
+      <div class="container">
+        <div class="section-heading centered reveal">
+          <div class="eyebrow">Interactive product preview</div>
+          <h2>Watch a council reach consensus.</h2>
+          <p>This browser-only simulation demonstrates the interaction design. Production responses would come from your PMGPT orchestration backend.</p>
+        </div>
+
+        <div class="demo-app reveal" data-demo-app>
+          <div class="demo-toolbar">
+            <label for="demo-question">Council question</label>
+            <div class="demo-input-row">
+              <select id="demo-question" data-question-select>
+                <option value="architecture">Design a resilient webhook architecture for massive scale.</option>
+                <option value="launch">Choose the strongest go-to-market plan for a new AI product.</option>
+                <option value="risk">Review a vendor agreement and identify the highest business risks.</option>
+              </select>
+              <button class="button button-primary" type="button" data-run-demo>Run council</button>
+            </div>
+            <div class="demo-progress" aria-label="Council phase">
+              <span class="active" data-stage-indicator="1">1. Propose</span>
+              <i></i>
+              <span data-stage-indicator="2">2. Challenge</span>
+              <i></i>
+              <span data-stage-indicator="3">3. Decide</span>
+            </div>
+          </div>
+
+          <div class="demo-model-grid" data-model-grid>
+            <article class="demo-model-card" data-model="a">
+              <div class="demo-model-head">
+                <span class="model-avatar">A</span>
+                <div><strong>Proposal A</strong><small>Independent response</small></div>
+                <span class="model-state" data-model-state>READY</span>
+              </div>
+              <p data-model-output>Select a question and run the council to begin.</p>
+              <div class="claim-actions" data-claim-actions hidden>
+                <button type="button" data-action="accept">Accept</button>
+                <button type="button" data-action="deny">Deny</button>
+                <button type="button" data-action="listen">Listen</button>
+              </div>
+            </article>
+
+            <article class="demo-model-card" data-model="b">
+              <div class="demo-model-head">
+                <span class="model-avatar">B</span>
+                <div><strong>Proposal B</strong><small>Independent response</small></div>
+                <span class="model-state" data-model-state>READY</span>
+              </div>
+              <p data-model-output>Each model will approach the same problem from a different angle.</p>
+              <div class="claim-actions" data-claim-actions hidden>
+                <button type="button" data-action="accept">Accept</button>
+                <button type="button" data-action="deny">Deny</button>
+                <button type="button" data-action="listen">Listen</button>
+              </div>
+            </article>
+
+            <article class="demo-model-card" data-model="c">
+              <div class="demo-model-head">
+                <span class="model-avatar">C</span>
+                <div><strong>Proposal C</strong><small>Independent response</small></div>
+                <span class="model-state" data-model-state>READY</span>
+              </div>
+              <p data-model-output>You remain in control of what enters the shared context.</p>
+              <div class="claim-actions" data-claim-actions hidden>
+                <button type="button" data-action="accept">Accept</button>
+                <button type="button" data-action="deny">Deny</button>
+                <button type="button" data-action="listen">Listen</button>
+              </div>
+            </article>
+          </div>
+
+          <div class="consensus-panel" data-consensus-panel>
+            <div class="consensus-head">
+              <div>
+                <small>CHAIRMAN SYNTHESIS</small>
+                <h3>Final council decision</h3>
+              </div>
+              <div class="score-ring" data-score-ring><span data-score>—</span><small>confidence</small></div>
+            </div>
+            <div class="consensus-body" data-consensus-output>
+              Run the simulated council, review each claim, and then synthesize a final answer.
+            </div>
+            <div class="consensus-footer">
+              <div class="context-tags" data-context-tags><span>No claims reviewed yet</span></div>
+              <button class="button button-light" type="button" data-synthesize disabled>Synthesize &amp; decide</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section control-section">
+      <div class="container control-grid">
+        <div class="control-copy reveal">
+          <div class="eyebrow">Human in the loop</div>
+          <h2>The models debate.<br><span>You set the rules.</span></h2>
+          <p>PMGPT Council is built around active oversight—not passive acceptance. Your decisions directly shape the context models receive in the next round.</p>
+          <a class="text-link" href="#demo">Try the controls <span>→</span></a>
+        </div>
+        <div class="control-cards">
+          <article class="control-card accept reveal">
+            <span class="control-action">ACCEPT</span>
+            <h3>Lock strong claims</h3>
+            <p>Add a validated idea to the established context so every model must account for it in the next round.</p>
+          </article>
+          <article class="control-card deny reveal" data-delay="80">
+            <span class="control-action">DENY</span>
+            <h3>Prune weak reasoning</h3>
+            <p>Remove a flawed assumption before it contaminates the rest of the debate or consumes more tokens.</p>
+          </article>
+          <article class="control-card listen reveal" data-delay="160">
+            <span class="control-action">LISTEN</span>
+            <h3>Let the debate develop</h3>
+            <p>Stay neutral and allow the models to cross-examine the claim before you make a decision.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-muted" id="use-cases">
+      <div class="container">
+        <div class="section-heading reveal">
+          <div class="eyebrow">Where councils outperform first answers</div>
+          <h2>Built for decisions that deserve a second opinion.</h2>
+        </div>
+        <div class="use-case-grid">
+          <article class="use-case reveal"><span>01</span><h3>System architecture</h3><p>Stress-test scalability, reliability, security, and cost before committing engineering resources.</p></article>
+          <article class="use-case reveal" data-delay="50"><span>02</span><h3>Business strategy</h3><p>Compare competing plans, surface hidden assumptions, and produce a decision memo with tradeoffs.</p></article>
+          <article class="use-case reveal" data-delay="100"><span>03</span><h3>Research synthesis</h3><p>Force multiple perspectives to reconcile evidence, uncertainty, and contradictory findings.</p></article>
+          <article class="use-case reveal" data-delay="150"><span>04</span><h3>Risk review</h3><p>Run contracts, policies, or plans through specialized critics before final human approval.</p></article>
+          <article class="use-case reveal" data-delay="200"><span>05</span><h3>Marketing decisions</h3><p>Debate positioning, creative strategy, audience fit, and likely objections before launch.</p></article>
+          <article class="use-case reveal" data-delay="250"><span>06</span><h3>Code review</h3><p>Combine implementation, security, and performance perspectives into one prioritized review.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section architecture-section" id="architecture">
+      <div class="container architecture-grid">
+        <div class="architecture-copy reveal">
+          <div class="eyebrow">Implementation-ready</div>
+          <h2>One orchestration layer.<br>Every model you trust.</h2>
+          <p>Use PMGPT as the control plane for model routing, debate state, streaming, user decisions, scoring, and final synthesis. Your product only needs one frontend-to-backend contract.</p>
+          <div class="architecture-points">
+            <div><span>01</span><p><strong>Unified model gateway</strong> Route providers through PMGPT, OpenRouter, or a LiteLLM-compatible endpoint.</p></div>
+            <div><span>02</span><p><strong>Server-side orchestration</strong> Keep API keys, debate state, and evaluation logic away from the browser.</p></div>
+            <div><span>03</span><p><strong>Streaming interface</strong> Use SSE or WebSockets to render model responses as they arrive.</p></div>
+            <div><span>04</span><p><strong>Auditable decisions</strong> Preserve proposals, critiques, user actions, scores, and final output as structured JSON.</p></div>
+          </div>
+        </div>
+
+        <div class="architecture-map reveal" data-delay="120" aria-label="System architecture diagram">
+          <div class="arch-node frontend-node"><small>EXPERIENCE</small><strong>Web / App UI</strong><span>Compare · Control · Decide</span></div>
+          <div class="arch-line vertical"><i></i></div>
+          <div class="arch-node core-node"><small>PMGPT CONTROL PLANE</small><strong>Council Orchestrator</strong><div><span>State</span><span>Rules</span><span>Scoring</span><span>Streaming</span></div></div>
+          <div class="arch-line branch"><i></i><i></i><i></i></div>
+          <div class="provider-row">
+            <div class="arch-node provider-node"><span class="provider-letter">A</span><strong>Model A</strong><small>Reasoning</small></div>
+            <div class="arch-node provider-node"><span class="provider-letter">B</span><strong>Model B</strong><small>Critique</small></div>
+            <div class="arch-node provider-node"><span class="provider-letter">C</span><strong>Model C</strong><small>Verification</small></div>
+          </div>
+          <div class="arch-caption"><span></span> Provider identities can remain hidden during evaluation.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section evidence-section" id="research">
+      <div class="container evidence-grid">
+        <div class="evidence-quote reveal">
+          <span class="quote-mark">“</span>
+          <blockquote>Debate is valuable because disagreement becomes visible, inspectable, and correctable before the final answer is produced.</blockquote>
+          <p>PMGPT Council product principle</p>
+        </div>
+        <div class="evidence-copy reveal" data-delay="100">
+          <div class="eyebrow">Research-informed, not hype-driven</div>
+          <h2>Multi-agent debate can improve reasoning and factuality.</h2>
+          <p>Published work has found meaningful gains from structured multi-agent debate and heterogeneous consensus. Results vary by task, model quality, prompts, and evaluation design, so PMGPT keeps the human decision-maker in control.</p>
+          <div class="research-links">
+            <a href="https://arxiv.org/abs/2305.14325" target="_blank" rel="noreferrer"><span>2023</span><div><strong>Improving Factuality and Reasoning through Multiagent Debate</strong><small>Du et al. · arXiv</small></div><b>↗</b></a>
+            <a href="https://arxiv.org/abs/2604.02923" target="_blank" rel="noreferrer"><span>2026</span><div><strong>Council Mode: Multi-Agent Consensus</strong><small>Wu et al. · arXiv</small></div><b>↗</b></a>
+          </div>
+          <p class="evidence-note"><strong>Important:</strong> Consensus is not proof. PMGPT Council is a decision-support system, not a substitute for qualified human review in medical, legal, financial, or safety-critical work.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section final-cta">
+      <div class="container">
+        <div class="cta-panel reveal">
+          <div class="cta-orbit orbit-one" aria-hidden="true"></div>
+          <div class="cta-orbit orbit-two" aria-hidden="true"></div>
+          <div class="cta-content">
+            <div class="eyebrow">A better answer starts with a better process</div>
+            <h2>Don’t ask one model.<br><span>Convene the council.</span></h2>
+            <p>Bring multi-model deliberation, human control, and auditable consensus into the PMGPT platform.</p>
+            <div class="hero-actions centered-actions">
+              <a class="button button-light" href="https://paymegpt.com/" target="_blank" rel="noreferrer">Start with PMGPT</a>
+              <a class="button button-outline-light" href="#architecture">Review implementation</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <a class="brand footer-brand" href="#top" aria-label="PMGPT Council home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-copy"><strong>PMGPT</strong><small>COUNCIL</small></span>
+      </a>
+      <p>Multi-model intelligence, orchestrated with human judgment.</p>
+      <div class="footer-links">
+        <a href="#how-it-works">Protocol</a>
+        <a href="#demo">Preview</a>
+        <a href="#research">Research</a>
+        <a href="https://paymegpt.com/" target="_blank" rel="noreferrer">PayMeGPT</a>
+      </div>
+      <small>© <span data-year></span> PMGPT. All rights reserved.</small>
+    </div>
+  </footer>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#10243a"/></linearGradient>
+    <linearGradient id="text" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#98f3ff"/><stop offset="1" stop-color="#a991ff"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#6fe7ff" stop-opacity=".25"/><stop offset="1" stop-color="#6fe7ff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="950" cy="140" r="360" fill="url(#glow)"/>
+  <g opacity=".12" stroke="#6fe7ff"><path d="M0 70h1200M0 140h1200M0 210h1200M0 280h1200M0 350h1200M0 420h1200M0 490h1200M0 560h1200"/><path d="M80 0v630M160 0v630M240 0v630M320 0v630M400 0v630M480 0v630M560 0v630M640 0v630M720 0v630M800 0v630M880 0v630M960 0v630M1040 0v630M1120 0v630"/></g>
+  <g transform="translate(86 78)">
+    <circle cx="22" cy="22" r="18" fill="none" stroke="#6fe7ff" stroke-width="2" opacity=".6"/>
+    <circle cx="22" cy="4" r="4" fill="#73f0b0"/><circle cx="7" cy="32" r="4" fill="#6fe7ff"/><circle cx="37" cy="32" r="4" fill="#a991ff"/>
+    <text x="56" y="18" fill="#eef7ff" font-family="Arial, sans-serif" font-size="24" font-weight="800" letter-spacing="3">PMGPT</text>
+    <text x="57" y="36" fill="#6fe7ff" font-family="Arial, sans-serif" font-size="10" font-weight="800" letter-spacing="7">COUNCIL</text>
+  </g>
+  <text x="86" y="240" fill="#eef7ff" font-family="Arial, sans-serif" font-size="78" font-weight="800" letter-spacing="-4">One question.</text>
+  <text x="86" y="327" fill="url(#text)" font-family="Arial, sans-serif" font-size="78" font-weight="800" letter-spacing="-4">Multiple models.</text>
+  <text x="86" y="414" fill="#eef7ff" font-family="Arial, sans-serif" font-size="78" font-weight="800" letter-spacing="-4">One defensible answer.</text>
+  <text x="90" y="485" fill="#aebed0" font-family="Arial, sans-serif" font-size="24">Human-controlled multi-model debate and consensus.</text>
+  <g transform="translate(878 245)">
+    <circle cx="0" cy="0" r="60" fill="#0d1a2b" stroke="#6fe7ff" stroke-opacity=".45"/><circle cx="150" cy="0" r="60" fill="#0d1a2b" stroke="#a991ff" stroke-opacity=".45"/><circle cx="75" cy="130" r="60" fill="#0d1a2b" stroke="#73f0b0" stroke-opacity=".45"/>
+    <path d="M52 30l38 65M98 30L60 95M60 0h30" fill="none" stroke="#6fe7ff" stroke-opacity=".4" stroke-width="3"/>
+    <text x="-12" y="12" fill="#98f3ff" font-family="Arial" font-size="34" font-weight="800">A</text><text x="138" y="12" fill="#c8baff" font-family="Arial" font-size="34" font-weight="800">B</text><text x="63" y="142" fill="#73f0b0" font-family="Arial" font-size="34" font-weight="800">C</text>
+  </g>
+</svg>
